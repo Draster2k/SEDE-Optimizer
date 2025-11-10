@@ -1,0 +1,57 @@
+Input:
+    Objective function f(x),
+    Population size N,
+    Dimension d,
+    Max iterations T,
+    Bounds [lb, ub],
+    Mutation factor F,
+    Mutation probability pm
+
+Initialize:
+    Generate initial population X = {x1, x2, …, xN} uniformly in [lb, ub]
+    Evaluate fitness Y = {f(x1), f(x2), …, f(xN)}
+    Store best solution (x_best, y_best)
+    Set history = [y_best]
+
+For t = 1 to T do:
+    Compute selection probabilities p_i from fitness values
+        p_i = (1 / (Y_i - min(Y) + ε)) / Σ (1 / (Y_j - min(Y) + ε))
+    Compute Shannon entropy H = - Σ p_i log(p_i)
+    Set entropy weight w = max(0.1, 1 - t/T)
+
+    For each individual i in {1 … N} do:
+        if rand < pm then
+            # Differential Evolution mutation (DE/rand/1)
+            Select distinct indices a, b, c ≠ i
+            v = xa + F * (xb - xc)
+        else
+            # Arithmetic crossover
+            Select two parents p1, p2
+            α ← Uniform(0,1)
+            v = α * xp1 + (1 - α) * xp2
+
+        # Add entropy-guided perturbation
+        noise ← Normal(0, w)
+        v = v + noise
+
+        # Bound handling
+        v = clip(v, lb, ub)
+
+        # Evaluate offspring
+        f_v = f(v)
+
+        # Greedy replacement
+        if f_v < Yi then
+            Xi = v, Yi = f_v
+        end if
+
+        # Update global best
+        if f_v < y_best then
+            x_best = v, y_best = f_v
+        end if
+    End For
+
+    Append y_best to history
+End For
+
+Output: Best solution (x_best, y_best), history of best fitness
