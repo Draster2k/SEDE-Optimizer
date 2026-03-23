@@ -58,19 +58,19 @@ If you wish to recalculate the definitive 30-Run Baselines validating SEDE mathe
 - **Speed-Gap Verification**:
   Proves the explicit Python Numba $O(N^2)$ compilation vs the current C++ $O(N^2)$ Engine.
   ```bash
-  python Speed_Gap_Test.py
+  python benchmarks/Speed_Gap_Test.py
   ```
 
 - **Real-World HPO Testing (Support Vector Machines)**:
   Executes a functional 5-Fold validation test across Breast Cancer hyperparameter tuning boundaries plotting performance vs iterations.
   ```bash
-  python RealWorldBench.py
+  python benchmarks/RealWorldBench.py
   ```
 
 - **Deep Matrix Convergence Suite**:
   Aggregates robust massive baseline plots logging $10D, 50D, 100D$ evaluations across 30 identical permutations outputting High-Res Graph arrays (`Results/*.png`).
   ```bash
-  python Final_Transition.py
+  python benchmarks/Final_Transition.py
   ```
 
 *Created as part of the hyper-dimensional optimization tuning transition protocol.*
