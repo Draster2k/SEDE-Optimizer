@@ -1,0 +1,26 @@
+# Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python Build & C++ Binaries
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+.installed.cfg
+*.egg
+sede_core.egg-info/
+
+# OSX / Temporary
+.DS_Store
+*.swp
+*.zip
+
+# Generated Outputs (Keep pngs/csvs potentially)
+# Results/

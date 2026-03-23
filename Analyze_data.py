@@ -2,111 +2,149 @@ import os
 import glob
 import numpy as np
 import pandas as pd
-from scipy.stats import friedmanchisquare, wilcoxon
-import matplotlib.pyplot as plt
+from scipy.stats import friedmanchisquare, rankdata, wilcoxon
+import warnings
+import re
 
-# === Algorithms ===
-algorithms = ["EGO", "DE", "GA", "PSO"]
+# Suppress warnings for cleaner output
+warnings.filterwarnings("ignore")
 
-# === Load results ===
-def load_results(results_dir="Results"):
-    files = glob.glob(os.path.join(results_dir, "*.csv"))
-    results = {}
-    for file in files:
-        name = os.path.basename(file).replace(".csv", "")
-        df = pd.read_csv(file)
-        results[name] = df
-    return results
+# === CONFIGURATION ===
+RESULTS_DIR = "Results"
+ALGORITHMS = ["SEDE", "PSO", "DE", "GA"] 
+LATEX_RESULTS_FILE = "results_table.tex"
+LATEX_RANKS_FILE = "ranks_table.tex"
 
-# === Friedman Test ===
-def friedman_test(results):
-    data = []
-    for name, df in results.items():
-        values = [df[algo].mean() for algo in algorithms]
-        data.append(values)
-    data = np.array(data).T
-    stat, p = friedmanchisquare(*data)
-    return stat, p
+def format_sci_latex(n):
+    if pd.isna(n): return "-"
+    if n == 0: return "0"
+    if 1e-3 < abs(n) < 1e3:
+        return f"{n:.2f}"
+    a, b = "{:.2e}".format(n).split("e")
+    b = int(b)
+    return f"${a} \\times 10^{{{b}}}$"
 
-# === Average Ranks ===
-def compute_ranks(results):
-    ranks = {algo: [] for algo in algorithms}
-    for _, df in results.items():
-        means = {algo: df[algo].mean() for algo in algorithms}
-        sorted_algos = sorted(means.items(), key=lambda x: x[1])
-        for rank, (algo, _) in enumerate(sorted_algos, start=1):
-            ranks[algo].append(rank)
-    avg_ranks = {algo: np.mean(r) for algo, r in ranks.items()}
-    return avg_ranks
+def extract_dim(filename):
+    """Extracts the numerical dimension from the filename string."""
+    match = re.search(r"(\d+)D", filename)
+    return int(match.group(1)) if match else 0
 
-# === Critical Difference Diagram ===
-def cd_diagram(avg_ranks, save_path="Results/cd_diagram.png"):
-    algos, ranks = zip(*sorted(avg_ranks.items(), key=lambda x: x[1]))
-    plt.figure(figsize=(8, 2))
-    plt.hlines(1, min(ranks) - 0.5, max(ranks) + 0.5, color="k")
-    for i, (algo, rank) in enumerate(zip(algos, ranks)):
-        plt.plot(rank, 1, "o", label=algo)
-        plt.text(rank, 1.05, algo, ha="center")
-    plt.xlabel("Average Rank (lower is better)")
-    plt.yticks([])
-    plt.legend().set_visible(False)
-    plt.tight_layout()
-    plt.savefig(save_path)
-    plt.close()
+def load_and_aggregate():
+    csv_files = glob.glob(os.path.join(RESULTS_DIR, "*.csv"))
+    if not csv_files:
+        print("❌ No CSV files found!")
+        return None
 
-# === LaTeX Table: Results per Benchmark ===
-def save_latex_results(results, save_path="Results/results_table.tex"):
-    with open(save_path, "w") as f:
-        f.write("\\begin{table}[h]\n\\centering\n")
-        f.write("\\begin{tabular}{lcccc}\n")
-        f.write("\\hline\n")
-        f.write("Function & EGO & DE & GA & PSO \\\\\n")
-        f.write("\\hline\n")
-        for name, df in results.items():
-            row = [f"{df[algo].mean():.2e} $\\pm$ {df[algo].std():.1e}" for algo in algorithms]
-            f.write(f"{name} & " + " & ".join(row) + " \\\\\n")
-        f.write("\\hline\n")
-        f.write("\\end{tabular}\n")
-        f.write("\\caption{Benchmark results (mean $\\pm$ std over 30 runs).}\n")
-        f.write("\\end{table}\n")
+    summary_rows = []
+    print(f"📂 Found {len(csv_files)} result files. Processing...")
 
-# === LaTeX Table: Ranks ===
-def save_latex_ranks(avg_ranks, save_path="Results/ranks_table.tex"):
-    with open(save_path, "w") as f:
-        f.write("\\begin{table}[h]\n\\centering\n")
-        f.write("\\begin{tabular}{lc}\n")
-        f.write("\\hline\n")
-        f.write("Algorithm & Average Rank \\\\\n")
-        f.write("\\hline\n")
-        for algo, rank in sorted(avg_ranks.items(), key=lambda x: x[1]):
-            f.write(f"{algo} & {rank:.2f} \\\\\n")
-        f.write("\\hline\n")
-        f.write("\\end{tabular}\n")
-        f.write("\\caption{Average ranks across benchmarks (lower is better).}\n")
-        f.write("\\end{table}\n")
+    for file in sorted(csv_files):
+        filename = os.path.basename(file).replace(".csv", "")
+        dim = extract_dim(filename)
+        func_name = filename.split("_")[0]
+        
+        try:
+            df = pd.read_csv(file)
+            for algo in ALGORITHMS:
+                if algo in df.columns:
+                    df[algo] = pd.to_numeric(df[algo], errors='coerce')
 
-# === Main ===
-def main():
-    results = load_results("Results")
+            row = {
+                "Benchmark": func_name,
+                "Dim": dim,
+                "Display": f"{func_name} {dim}D"
+            }
+            
+            for algo in ALGORITHMS:
+                data = df[algo].dropna()
+                row[f"{algo}_mean"] = data.mean() if len(data) > 0 else np.nan
+                row[f"{algo}_std"] = data.std() if len(data) > 0 else np.nan
+            
+            summary_rows.append(row)
+        except Exception as e:
+            print(f"   ❌ Error reading {filename}: {e}")
 
-    # Friedman test
-    stat, p = friedman_test(results)
-    print("\n=== Friedman Test ===")
-    print(f"Chi2 = {stat:.3f}, p = {p:.3e}")
+    summary_df = pd.DataFrame(summary_rows)
+    # Sort by Function Name, then by Dimension
+    summary_df = summary_df.sort_values(by=["Benchmark", "Dim"])
+    return summary_df
 
-    # Average ranks
-    avg_ranks = compute_ranks(results)
-    print("\n=== Average Ranks ===")
-    for algo, rank in avg_ranks.items():
-        print(f"{algo}: {rank:.2f}")
+def generate_latex_table(summary_df):
+    with open(LATEX_RESULTS_FILE, "w") as f:
+        f.write("\\begin{table*}[htbp]\n\\centering\n")
+        f.write("\\caption{Benchmark Results across 10D, 50D, and 100D. Best results are bolded.}\n")
+        f.write("\\resizebox{\\textwidth}{!}{\n")
+        
+        col_setup = "l" + "c" * len(ALGORITHMS)
+        f.write(f"\\begin{{tabular}}{{{col_setup}}}\n\\hline\n")
+        f.write("Function & " + " & ".join(ALGORITHMS) + " \\\\\n\\hline\n")
 
-    # CD diagram
-    cd_diagram(avg_ranks)
+        for _, row in summary_df.iterrows():
+            line_items = [row["Display"]]
+            means = [row[f"{algo}_mean"] for algo in ALGORITHMS]
+            best_mean = np.nanmin(means)
 
-    # Save LaTeX tables
-    save_latex_results(results)
-    save_latex_ranks(avg_ranks)
-    print("\nLaTeX tables saved to Results/")
+            for algo in ALGORITHMS:
+                m = row[f"{algo}_mean"]
+                s = row[f"{algo}_std"]
+                txt = f"{format_sci_latex(m)} $\\pm$ {format_sci_latex(s)}"
+                
+                # PRECISION BOLDING FIX:
+                # Bolds if exactly equal or within a tiny relative tolerance
+                if not pd.isna(m):
+                    is_best = False
+                    if m == best_mean:
+                        is_best = True
+                    elif best_mean != 0 and abs(m - best_mean) / abs(best_mean) < 1e-8:
+                        is_best = True
+                    
+                    if is_best:
+                        txt = f"\\textbf{{{txt}}}"
+                
+                line_items.append(txt)
+            f.write(" & ".join(line_items) + " \\\\\n")
+
+        f.write("\\hline\n\\end{tabular}\n}\n\\end{table*}\n")
+    print(f"✅ Saved Multi-Dim LaTeX Table to: {LATEX_RESULTS_FILE}")
+
+def run_statistical_tests(summary_df):
+    print("\n📊 Running Statistical Tests...")
+    data_matrix = np.array([[row[f"{algo}_mean"] for algo in ALGORITHMS] for _, row in summary_df.iterrows()])
+    
+    if np.isnan(data_matrix).any():
+        data_matrix = np.nan_to_num(data_matrix, nan=np.inf)
+
+    stat, p_value = friedmanchisquare(*data_matrix.T)
+    print(f"   -> Friedman Test: Chi2={stat:.3f}, p-value={p_value:.3e}")
+    
+    ranks = np.array([rankdata(row) for row in data_matrix])
+    avg_ranks = np.mean(ranks, axis=0)
+    
+    with open(LATEX_RANKS_FILE, "w") as f:
+        f.write("\\begin{table}[h]\n\\centering\n\\begin{tabular}{lc}\n\\hline\nAlgorithm & Avg Rank \\\\\n\\hline\n")
+        for i in np.argsort(avg_ranks):
+            f.write(f"{ALGORITHMS[i]} & {avg_ranks[i]:.2f} \\\\\n")
+        f.write("\\hline\n\\end{tabular}\n\\end{table}\n")
+        
+    print(f"✅ Saved Ranks Table to: {LATEX_RANKS_FILE}")
+
+    # Wilcoxon: SEDE vs Runner-up
+    try:
+        sede_idx = ALGORITHMS.index("SEDE")
+        sorted_indices = np.argsort(avg_ranks)
+        runner_up_idx = sorted_indices[0] if sorted_indices[0] != sede_idx else sorted_indices[1]
+        
+        sede_scores = data_matrix[:, sede_idx]
+        runner_up_scores = data_matrix[:, runner_up_idx]
+        
+        if not np.allclose(sede_scores, runner_up_scores):
+            _, p_val_w = wilcoxon(sede_scores, runner_up_scores)
+            print(f"   -> Wilcoxon (SEDE vs {ALGORITHMS[runner_up_idx]}): p={p_val_w:.3e}")
+    except Exception as e:
+        print(f"   ❌ Wilcoxon Error: {e}")
 
 if __name__ == "__main__":
-    main()
+    df = load_and_aggregate()
+    if df is not None:
+        generate_latex_table(df)
+        run_statistical_tests(df)
