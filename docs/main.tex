@@ -18,12 +18,12 @@
 % =================================================================================
 % TITLE & AUTHOR
 % =================================================================================
-\title{Comprehensive Scalability Analysis of Entropy-Guided Optimization (EGO) on High-Dimensional Landscapes}
+\title{Comprehensive Scalability Analysis of Spatial Entropy Differential Evolution (SEDE) on High-Dimensional Landscapes}
 
 \author{\IEEEauthorblockN{Azar Adham}
 \IEEEauthorblockA{\textit{Independent Researcher} \\
 Jeddah, Saudi Arabia \\
-\texttt{pip install ego-optimizer}}}
+\texttt{pip install sede-optimizer}}}
 
 \maketitle
 
@@ -31,7 +31,7 @@ Jeddah, Saudi Arabia \\
 % ABSTRACT
 % =================================================================================
 \begin{abstract}
-This paper presents a granular, function-by-function analysis of Entropy-Guided Optimization (EGO). Unlike aggregate studies, we dissect the performance behaviors across distinct dimensional tiers: 30D, 50D, and 100D. By analyzing specific landscape topologies—from the convex slopes of Sphere to the treacherous valleys of Rosenbrock—we demonstrate EGO's ability to autonomously regulate exploitation and exploration using Shannon Entropy, effectively mitigating the "Curse of Dimensionality."
+This paper presents a granular, function-by-function analysis of Spatial Entropy Differential Evolution (SEDE). Unlike aggregate studies, we dissect the performance behaviors across distinct dimensional tiers: 30D, 50D, and 100D. By analyzing specific landscape topologies—from the convex slopes of Sphere to the treacherous valleys of Rosenbrock—we demonstrate SEDE's ability to autonomously regulate exploitation and exploration using Shannon Entropy, effectively mitigating the "Curse of Dimensionality."
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -44,13 +44,13 @@ Evolutionary Computing, Large Scale Global Optimization, Entropy, Metaheuristics
 \section{Introduction}
 Global optimization in high-dimensional spaces remains a persistent challenge in computational intelligence \cite{b1}. As dimensionality increases, the volume of the search space expands exponentially, causing standard metaheuristics like Particle Swarm Optimization (PSO) \cite{b2} and Genetic Algorithms (GA) \cite{b3} to suffer from premature convergence or stagnation.
 
-Recent approaches in Large Scale Global Optimization (LSGO) have focused on cooperative co-evolution \cite{b4} and adaptive parameter control \cite{b5}. However, these methods often introduce complex hyperparameters that require manual tuning. In this study, we propose Entropy-Guided Optimization (EGO), a parameter-free framework that utilizes the thermodynamic concept of entropy to dynamically scale search step sizes. We validate EGO against established baselines across 67 benchmark instances ranging from 30 to 100 dimensions.
+Recent approaches in Large Scale Global Optimization (LSGO) have focused on cooperative co-evolution \cite{b4} and adaptive parameter control \cite{b5}. However, these methods often introduce complex hyperparameters that require manual tuning. In this study, we propose Spatial Entropy Differential Evolution (SEDE), a parameter-free framework that utilizes the thermodynamic concept of entropy to dynamically scale search step sizes. We validate SEDE against established baselines across 67 benchmark instances ranging from 30 to 100 dimensions.
 
 % =================================================================================
 % SECTION II: PROPOSED METHOD (This was missing before)
 % =================================================================================
-\section{Proposed Method: EGO}
-The core hypothesis of EGO is that the diversity of a population can be quantified as "information," and this information can drive the search strategy.
+\section{Proposed Method: SEDE}
+The core hypothesis of SEDE is that the diversity of a population can be quantified as "information," and this information can drive the search strategy.
 
 \subsection{Entropy as a Diversity Metric}
 We define the population entropy $H(g)$ at generation $g$ using Shannon's Information Theory \cite{b6}:
@@ -60,7 +60,7 @@ H(g) = - \sum_{i=1}^{N} p_i \log p_i
 where $N$ is the population size and $p_i$ is the fitness probability of individual $i$, normalized across the current population. High entropy indicates a scattered population (Exploration phase), while low entropy indicates clustering (Exploitation phase).
 
 \subsection{Adaptive Mutation Scaling}
-Standard Differential Evolution (DE) \cite{b7} relies on a fixed scaling factor $F$. EGO replaces this with a dynamic $F_{new}$, derived from the real-time entropy state:
+Standard Differential Evolution (DE) \cite{b7} relies on a fixed scaling factor $F$. SEDE replaces this with a dynamic $F_{new}$, derived from the real-time entropy state:
 \begin{equation}
 F_{new} = F_{min} + (F_{max} - F_{min}) \times \frac{H(g)}{H_{max}}
 \end{equation}
@@ -86,7 +86,7 @@ To ensure a fair comparison, all algorithms utilized identical computational bud
 The Sphere function ($f(x) = \sum x_i^2$) is a unimodal, convex landscape. It serves as the baseline for testing pure convergence speed.
 
 \subsection{Numerical Analysis}
-Table \ref{tab:sphere} highlights EGO's consistency. While PSO performance degrades by an order of magnitude from 50D to 100D, EGO remains stable.
+Table \ref{tab:sphere} highlights SEDE's consistency. While PSO performance degrades by an order of magnitude from 50D to 100D, SEDE remains stable.
 
 \begin{table}[htbp]
 \centering
@@ -97,7 +97,7 @@ Table \ref{tab:sphere} highlights EGO's consistency. While PSO performance degra
 \toprule
 \textbf{Algorithm} & \textbf{30D} & \textbf{50D} & \textbf{100D} \\
 \midrule
-\textbf{EGO} & $2.27e-01$ & $5.86e-01$ & $\mathbf{2.58e+00}$ \\
+\textbf{SEDE} & $2.27e-01$ & $5.86e-01$ & $\mathbf{2.58e+00}$ \\
 DE           & $3.94e-04$ & $4.72e-02$ & $3.57e+00$ \\
 GA           & $1.52e-01$ & $4.47e-01$ & $2.01e+00$ \\
 PSO          & $8.41e+01$ & $2.29e+02$ & $7.13e+02$ \\
@@ -133,7 +133,7 @@ PSO          & $8.41e+01$ & $2.29e+02$ & $7.13e+02$ \\
 The Step function consists of flat plateaus where gradients are zero \cite{b8}. This confuses algorithms relying on local slope information.
 
 \subsection{Numerical Analysis}
-EGO achieves a perfect zero in 30D and 50D. In 100D, it scores $1.25e+00$, significantly outperforming GA ($8.84e+04$) and PSO ($2.74e+05$).
+SEDE achieves a perfect zero in 30D and 50D. In 100D, it scores $1.25e+00$, significantly outperforming GA ($8.84e+04$) and PSO ($2.74e+05$).
 
 \begin{table}[htbp]
 \centering
@@ -144,7 +144,7 @@ EGO achieves a perfect zero in 30D and 50D. In 100D, it scores $1.25e+00$, signi
 \toprule
 \textbf{Algorithm} & \textbf{30D} & \textbf{50D} & \textbf{100D} \\
 \midrule
-\textbf{EGO} & $\mathbf{0.00e+00}$ & $\mathbf{0.00e+00}$ & $\mathbf{1.25e+00}$ \\
+\textbf{SEDE} & $\mathbf{0.00e+00}$ & $\mathbf{0.00e+00}$ & $\mathbf{1.25e+00}$ \\
 DE           & $0.00e+00$ & $2.30e+01$ & $1.33e+03$ \\
 GA           & $1.97e+04$ & $4.25e+04$ & $8.84e+04$ \\
 PSO          & $3.52e+04$ & $9.50e+04$ & $2.74e+05$ \\
@@ -188,7 +188,7 @@ Ackley is a classic multimodal test with a nearly flat outer region and a deep c
 \toprule
 \textbf{Algorithm} & \textbf{30D} & \textbf{50D} & \textbf{100D} \\
 \midrule
-\textbf{EGO} & $4.09e-03$ & $9.15e-01$ & $\mathbf{1.69e+00}$ \\
+\textbf{SEDE} & $4.09e-03$ & $9.15e-01$ & $\mathbf{1.69e+00}$ \\
 DE           & $2.18e+00$ & $1.68e-01$ & $1.88e+00$ \\
 GA           & $3.58e+00$ & $3.61e+00$ & $4.43e+00$ \\
 PSO          & $4.26e+00$ & $8.73e+00$ & $9.75e+00$ \\
@@ -211,7 +211,7 @@ PSO          & $4.26e+00$ & $8.73e+00$ & $9.75e+00$ \\
     \begin{subfigure}{0.9\columnwidth}
         \centering
         \includegraphics[width=\linewidth]{Ackley_100D_boxplot.png}
-        \caption{Ackley 100D: EGO maintains exploration.}
+        \caption{Ackley 100D: SEDE maintains exploration.}
     \end{subfigure}
     \caption{Ackley Multimodal Robustness.}
 \end{figure}
@@ -232,7 +232,7 @@ Known as the "Valley of Rosenbrock," this function is unimodal in low dimensions
 \toprule
 \textbf{Algorithm} & \textbf{30D} & \textbf{50D} & \textbf{100D} \\
 \midrule
-\textbf{EGO} & $5.04e+01$ & $\mathbf{1.16e+02}$ & $\mathbf{5.38e+02}$ \\
+\textbf{SEDE} & $5.04e+01$ & $\mathbf{1.16e+02}$ & $\mathbf{5.38e+02}$ \\
 DE           & $4.44e+01$ & $2.05e+02$ & $1.88e+03$ \\
 GA           & $5.71e+01$ & $1.32e+02$ & $6.18e+02$ \\
 PSO          & $9.47e+04$ & $3.42e+05$ & $1.28e+06$ \\
@@ -265,7 +265,7 @@ PSO          & $9.47e+04$ & $3.42e+05$ & $1.28e+06$ \\
 % SECTION VIII: RASTRIGIN
 % =================================================================================
 \section{Test 5: Rastrigin Function}
-Rastrigin is the ultimate test for Exploration. The landscape is covered in a grid of local minima. In 50D, EGO ($2.06e+02$) outperforms DE ($2.22e+02$) and PSO ($4.98e+02$).
+Rastrigin is the ultimate test for Exploration. The landscape is covered in a grid of local minima. In 50D, SEDE ($2.06e+02$) outperforms DE ($2.22e+02$) and PSO ($4.98e+02$).
 
 \begin{figure}[htbp]
     \centering
@@ -294,7 +294,7 @@ Rastrigin is the ultimate test for Exploration. The landscape is covered in a gr
 We further extend the analysis to difficult functions like Levy, Elliptic, and Fletcher-Powell to test specific landscape properties.
 
 \subsection{Levy Function}
-Levy 100D tests the algorithm's ability to handle heavy-tailed distributions. EGO maintains tight variance compared to PSO.
+Levy 100D tests the algorithm's ability to handle heavy-tailed distributions. SEDE maintains tight variance compared to PSO.
 
 \begin{figure}[htbp]
     \centering
@@ -328,7 +328,7 @@ The Elliptic function tests conditioning. The high condition number often causes
 \FloatBarrier
 
 \subsection{Complex Noise: Griewank \& NoisyQuartic}
-Griewank introduces cosine noise, while NoisyQuartic adds random noise. EGO's entropy filter effectively ignores this noise.
+Griewank introduces cosine noise, while NoisyQuartic adds random noise. SEDE's entropy filter effectively ignores this noise.
 
 \begin{figure}[htbp]
     \centering
@@ -348,7 +348,7 @@ Griewank introduces cosine noise, while NoisyQuartic adds random noise. EGO's en
 % SECTION X: CONCLUSION
 % =================================================================================
 \section{Conclusion}
-This granular analysis confirms that EGO's advantage is not limited to simple functions. By systematically testing across 30, 50, and 100 dimensions, we observe that the Entropy-Guided mechanism provides a distinct "scalability shield," preventing the exponential degradation of performance seen in classical Swarm Intelligence methods.
+This granular analysis confirms that SEDE's advantage is not limited to simple functions. By systematically testing across 30, 50, and 100 dimensions, we observe that the Spatial Entropy mechanism provides a distinct "scalability shield," preventing the exponential degradation of performance seen in classical Swarm Intelligence methods.
 
 % =================================================================================
 % REFERENCES (Expanded to 10+)

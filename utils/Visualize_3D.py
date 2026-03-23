@@ -1,3 +1,8 @@
+
+import sys
+import os
+# Allow importing modules from the root repository
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import re
 import os
 import numpy as np
@@ -118,8 +123,8 @@ def plot_3d_results():
             ax.legend(loc='upper right', bbox_to_anchor=(1.4, 1))
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    os.makedirs('Results', exist_ok=True)
-    plt.savefig('Results/3D_Results_Visualization.png', dpi=300)
+    os.makedirs(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Results")), exist_ok=True)
+    plt.savefig(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Results")) + "/3D_Results_Visualization.png', dpi=300)
     print("✅ Successfully generated 3D visualization: Results/3D_Results_Visualization.png")
 
 if __name__ == "__main__":

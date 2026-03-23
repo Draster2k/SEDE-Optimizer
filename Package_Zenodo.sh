@@ -13,6 +13,9 @@ zip -r SEDE_Optimizer_v2_Research_Bundle.zip \
     runner.py \
     SEDE.py \
     setup.py \
-    pyproject.toml
+    pyproject.toml \
+    benchmarks/ \
+    utils/ \
+    docs/
 
 echo "✅ Bundle Created: SEDE_Optimizer_v2_Research_Bundle.zip"

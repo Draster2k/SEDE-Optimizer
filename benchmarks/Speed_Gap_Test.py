@@ -1,3 +1,8 @@
+
+import sys
+import os
+# Allow importing modules from the root repository
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import numpy as np
 import time
 from SEDE import spatial_entropy_differential_evolution

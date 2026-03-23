@@ -1,3 +1,8 @@
+
+import sys
+import os
+# Allow importing modules from the root repository
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,11 +18,11 @@ def clean_data(df):
 
 def plot_all_boxplots():
     print("📊 Generating Box Plots for ALL dimensions...")
-    if not os.path.exists("Results"):
+    if not os.path.exists(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Results"))):
         return
 
     # Look for ALL CSV files now
-    files = [f for f in os.listdir("Results") if f.endswith(".csv") and "table" not in f]
+    files = [f for f in os.listdir(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Results"))) if f.endswith(".csv") and "table" not in f]
     
     for file in files:
         func_name = file.replace(".csv", "").replace("_", " ")

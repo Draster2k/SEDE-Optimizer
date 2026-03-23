@@ -1,3 +1,8 @@
+
+import sys
+import os
+# Allow importing modules from the root repository
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import os
 import glob
 import numpy as np
@@ -10,7 +15,7 @@ import re
 warnings.filterwarnings("ignore")
 
 # === CONFIGURATION ===
-RESULTS_DIR = "Results"
+RESULTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Results"))
 ALGORITHMS = ["SEDE", "PSO", "DE", "GA"] 
 LATEX_RESULTS_FILE = "results_table.tex"
 LATEX_RANKS_FILE = "ranks_table.tex"
