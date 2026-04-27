@@ -1,5 +1,11 @@
 # SEDE: Spatial Entropy Differential Evolution
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19832425.svg)](https://doi.org/10.5281/zenodo.19832425)
+[![Paper](https://img.shields.io/badge/Paper-10.5281%2Fzenodo.19190935-blue)](https://doi.org/10.5281/zenodo.19190935)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--9555--1036-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0005-9555-1036)
+
 **SEDE** is a production-grade, hyper-dimensional optimization metaheuristic. Built on the structural foundations of Differential Evolution (DE), SEDE integrates a bespoke **Spatial Entropy** measurement derived from an exact $O(N^2)$ Gaussian kernel to dynamically govern the boundaries between structural exploration ($CR$) and targeted exploitation ($F$) phases.
 
 This repository natively features the newly compiled **C++ OpenMP Backend** (via `PyBind11`), achieving a definitive **~4.7x acceleration** over standard JIT-bound Python implementations. This scaling factor allows operations to rapidly traverse complex Machine Learning tuning matrices (like SVM continuous threshold sweeping) while entirely mitigating the notorious Boundary Stagnation logic up to $500$ dimensions.
@@ -74,3 +80,41 @@ If you wish to recalculate the definitive 30-Run Baselines validating SEDE mathe
   ```
 
 *Created as part of the hyper-dimensional optimization tuning transition protocol.*
+
+---
+
+## 📚 Citing
+
+If you use SEDE in academic work, please cite the archived software release:
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19832425.svg)](https://doi.org/10.5281/zenodo.19832425)
+
+```bibtex
+@software{adham_sede_2026,
+  author       = {Adham, Azar},
+  title        = {Draster2k/SEDE-Optimizer: SEDE Optimizer v2.0.0},
+  year         = {2026},
+  publisher    = {Zenodo},
+  version      = {2.0.0},
+  doi          = {10.5281/zenodo.19832425},
+  url          = {https://doi.org/10.5281/zenodo.19832425},
+  orcid        = {https://orcid.org/0009-0005-9555-1036}
+}
+```
+
+The companion preprint introducing the algorithm is archived separately:
+
+```bibtex
+@misc{adham_sede_paper_2026,
+  author    = {Adham, Azar},
+  title     = {SEDE: Spatial Entropy Differential Evolution},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.19190935},
+  url       = {https://doi.org/10.5281/zenodo.19190935}
+}
+```
+
+GitHub also offers a one-click "Cite this repository" button (powered by
+[`CITATION.cff`](CITATION.cff) at the repo root) that exports both
+records in BibTeX, RIS, EndNote, and other formats automatically.

@@ -1,0 +1,50 @@
+# GitHub-recognized citation file (Citation File Format v1.2.0)
+# https://citation-file-format.github.io/
+cff-version: 1.2.0
+title: "SEDE: Spatial Entropy Differential Evolution"
+message: "If you use this software, please cite both the archived release and, where applicable, the accompanying preprint."
+type: software
+authors:
+  - given-names: Azar
+    family-names: Adham
+    email: contact@azaradham.com
+    orcid: "https://orcid.org/0009-0005-9555-1036"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19832425
+    description: "Zenodo software archive of SEDE Optimizer v2.0.0"
+  - type: doi
+    value: 10.5281/zenodo.19190935
+    description: "Companion preprint: SEDE — Spatial Entropy Differential Evolution"
+repository-code: "https://github.com/Draster2k/SEDE-Optimizer"
+url: "https://github.com/Draster2k/SEDE-Optimizer"
+abstract: >-
+  SEDE is a production-grade metaheuristic for high-dimensional global
+  optimization. It augments Differential Evolution with a spatial entropy
+  measurement (an exact O(N^2) Gaussian kernel over genotype distances)
+  that dynamically governs the balance between structural exploration
+  and targeted exploitation. The reference implementation provides a
+  C++/OpenMP backend exposed via pybind11, achieving ~4.7x speedup over
+  JIT-bound Python implementations and remaining stable up to D=500.
+keywords:
+  - differential-evolution
+  - global-optimization
+  - metaheuristics
+  - spatial-entropy
+  - high-dimensional-optimization
+  - pybind11
+  - openmp
+  - hyperparameter-tuning
+license: MIT
+version: 2.0.0
+date-released: "2026-04-27"
+preferred-citation:
+  type: software
+  title: "Draster2k/SEDE-Optimizer: SEDE Optimizer v2.0.0"
+  authors:
+    - given-names: Azar
+      family-names: Adham
+      orcid: "https://orcid.org/0009-0005-9555-1036"
+  year: 2026
+  doi: 10.5281/zenodo.19832425
+  url: "https://doi.org/10.5281/zenodo.19832425"

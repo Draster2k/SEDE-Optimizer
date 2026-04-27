@@ -1,3 +1,55 @@
 [build-system]
-requires = ["setuptools", "wheel", "pybind11"]
+requires = ["setuptools>=64", "wheel", "pybind11>=2.10"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "sede_core"
+version = "2.0.0"
+description = "SEDE: Spatial Entropy Differential Evolution — C++/OpenMP-accelerated metaheuristic for high-dimensional global optimization"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "Azar Adham", email = "contact@azaradham.com" }]
+keywords = [
+    "differential-evolution",
+    "global-optimization",
+    "metaheuristics",
+    "spatial-entropy",
+    "high-dimensional-optimization",
+    "pybind11",
+    "openmp",
+    "hyperparameter-tuning",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "joblib",
+    "scipy",
+    "scikit-opt",
+]
+
+[project.optional-dependencies]
+benchmark = ["scikit-learn"]
+
+[project.urls]
+Repository = "https://github.com/Draster2k/SEDE-Optimizer"
+Issues = "https://github.com/Draster2k/SEDE-Optimizer/issues"
+Archive = "https://doi.org/10.5281/zenodo.19832425"
+Paper = "https://doi.org/10.5281/zenodo.19190935"

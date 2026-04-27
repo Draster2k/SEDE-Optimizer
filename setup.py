@@ -31,7 +31,7 @@ ext_modules = [
 ]
 
 setup(
-    name="sede_core",
-    version="1.0",
+    # Project metadata (name, version, deps, etc.) lives in pyproject.toml.
+    # This file declares only the C++ extension build.
     ext_modules=ext_modules,
 )
